@@ -1,13 +1,8 @@
 import { cn } from "@/lib/utils";
 import "./globals.css";
-import { Inter as FontSans } from "next/font/google";
 import { AppProviders } from "./providers";
 import Header from "./header";
-
-const fontSans = FontSans({
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
+import { inconsolata } from "@/src/theme/font";
 
 export default function RootLayout({
   children,
@@ -21,8 +16,7 @@ export default function RootLayout({
         <body
           className={cn(
             "min-h-screen bg-background font-sans antialiased",
-            fontSans.variable,
-            ""
+            inconsolata.className
           )}
         >
           <Header />

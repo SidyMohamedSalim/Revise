@@ -1,13 +1,15 @@
 import React from "react";
 import StartQuizz from "./StartQuizz";
 import { generateArrayQuizz } from "@/lib/quizz";
+import TextForm from "./TextForm";
 
 const GenerateAiQuestion = () => {
   const data = generateArrayQuizz();
 
   return (
     <div>
-      <StartQuizz questions={data} />
+      <TextForm />
+      {/* <StartQuizz questions={data} /> */}
     </div>
   );
 };

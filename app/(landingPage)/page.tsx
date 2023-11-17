@@ -21,24 +21,22 @@ export default function Page() {
         <div className="mx-auto max-w-2xl py-32 sm:py-48 lg:py-56">
           <div className="text-center">
             <h1 className="text-4xl font-bold tracking-tight text-gray-900  dark:text-gray-100 sm:text-6xl">
-              Utilize and create quizzes for the purpose of revision.
+              {" "}
+              Reviser avec l&apos;IA
             </h1>
             <p className="mt-6 text-lg leading-8 text-gray-600 dark:text-gray-300">
-              Optimize your learning process with the effective use of quizzes
-              designed for thorough revision. Whether you are preparing for
-              exams, reinforcing key concepts, or enhancing your overall
-              understanding, the act of engaging with well-crafted quizzes can
-              significantly contribute to your revision strategy.
+              Utilisez un texte existant pour créer un questionnaire et évaluer
+              votre compréhension du sujet.
             </p>
             <div className="mt-10 flex items-center justify-center gap-x-6">
               <Link href={"/quizz"} className={cn(buttonVariants())}>
-                Get Started
+                Commencer
               </Link>
               <Link
                 href="#"
                 className="text-sm font-semibold leading-6 text-gray-900  dark:text-gray-100"
               >
-                Login <span aria-hidden="true">→</span>
+                Connexion <span aria-hidden="true">→</span>
               </Link>
             </div>
           </div>
