@@ -1,3 +1,5 @@
+"use client";
+
 import CenterLayout from "@/components/layout/CenterLayout";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -6,10 +8,21 @@ import ButtonTheme from "@/src/theme/ButtonTheme";
 import Link from "next/link";
 import React from "react";
 
-const Header = () => {
+import { signIn } from "next-auth/react";
+import AvatarProfile from "@/components/ui/AvatarProfile";
+
+const Header = ({
+  userId,
+  userName,
+  userImage,
+}: {
+  userId?: string;
+  userImage?: string | undefined | null;
+  userName?: string | undefined | null;
+}) => {
   return (
     <div>
-      <CenterLayout className="flex justify-between items-center">
+      <CenterLayout className="flex justify-between items-center max-md:text-sm">
         <Link
           href="/"
           className="text-xl font-extrabold text-purple-700 flex items-center"
@@ -34,7 +47,19 @@ const Header = () => {
 
         <div className="flex items-center gap-4">
           <ButtonTheme />
-          <Button>Connexion</Button>
+          {userId ? (
+            <div>
+              <AvatarProfile name={userName} image={userImage} />
+            </div>
+          ) : (
+            <Button
+              onClick={async (e) => {
+                await signIn();
+              }}
+            >
+              Connexion
+            </Button>
+          )}
         </div>
       </CenterLayout>
       <Separator />

@@ -16,7 +16,7 @@ export function QuizzForm({
   option,
   setOption,
 }: {
-  question: QuizQuestion;
+  question: QuizQuestion | null;
   isSubmit: boolean;
   option: optionType;
   setOption: (value: React.SetStateAction<optionType>) => void;
@@ -24,7 +24,7 @@ export function QuizzForm({
   const ids: optionType["id"][] = ["choiceA", "choiceB", "choiceC", "choiceD"];
   return (
     <div>
-      {question.options.map((el, index) => (
+      {question?.options.map((el, index) => (
         <Option
           key={el}
           isSubmit={isSubmit}

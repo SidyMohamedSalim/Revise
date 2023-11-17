@@ -1,11 +1,19 @@
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { getAuthSession } from "@/lib/authConfig";
+import { redirect } from "next/navigation";
 
-export default function Page() {
+export default async function Page() {
+  const session = await getAuthSession();
+
+  if (session?.user.id) {
+    redirect("/quizz");
+  }
+
   return (
     <div>
-      <div className="relative px-6 pt-14 lg:px-8">
+      <div className="relative px-6 pt-14 lg:px-8 w-full">
         <div
           className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80"
           aria-hidden="true"
@@ -32,17 +40,19 @@ export default function Page() {
               <Link href={"/quizz"} className={cn(buttonVariants())}>
                 Commencer
               </Link>
-              <Link
-                href="#"
-                className="text-sm font-semibold leading-6 text-gray-900  dark:text-gray-100"
-              >
-                Connexion <span aria-hidden="true">→</span>
-              </Link>
+              {!session?.user.id && (
+                <Button
+                  variant={"link"}
+                  className="text-sm font-semibold leading-6 text-gray-900  dark:text-gray-100"
+                >
+                  Connexion <span aria-hidden="true">→</span>
+                </Button>
+              )}
             </div>
           </div>
         </div>
         <div
-          className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
+          className="absolute inset-x-0 top-[calc(100%-13rem)] text-xs -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
           aria-hidden="true"
         >
           <div

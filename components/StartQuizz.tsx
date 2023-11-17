@@ -5,6 +5,7 @@ import { QuizzForm, optionType } from "./QuizzForm";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 import { Progress } from "./ui/progress";
+import { UseQUizzStore } from "@/src/zustand/store";
 
 export type QuizzProgressType = {
   currentIndex: number;
@@ -12,22 +13,29 @@ export type QuizzProgressType = {
   score: number;
 };
 
-const StartQuizz = ({ questions }: { questions: QuizQuestion[] }) => {
+const StartQuizz = () => {
+  const router = useRouter();
+  const questions = UseQUizzStore((state) => state.data);
+
+  if (!questions) {
+    router.push("/quizz");
+  }
+
   const [option, setOption] = useState<optionType>({
     value: "",
     id: undefined,
   });
 
-  const router = useRouter();
   const [isSubmit, setIsSubmit] = useState(false);
-  // const [notSelectedOption, setNotSelectedOption] = useState(false);
   const [Quizzprogress, SetQuizzProgress] = useState<QuizzProgressType>({
     currentIndex: 0,
-    numberQuestions: questions.length,
+    numberQuestions: questions?.length ?? 0,
     score: 0,
   });
 
-  const CurrentQuestion = questions[Quizzprogress.currentIndex];
+  const CurrentQuestion = questions
+    ? questions[Quizzprogress.currentIndex]
+    : null;
 
   // start Game
   const onSubmitGame = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -43,7 +51,7 @@ const StartQuizz = ({ questions }: { questions: QuizQuestion[] }) => {
 
     setTimeout(() => {
       if (Quizzprogress.currentIndex <= Quizzprogress.numberQuestions - 1) {
-        if (CurrentQuestion.correctAnswer === option.value) {
+        if (CurrentQuestion?.correctAnswer === option.value) {
           SetQuizzProgress((current) => {
             return {
               ...current,
@@ -86,15 +94,9 @@ const StartQuizz = ({ questions }: { questions: QuizQuestion[] }) => {
             </span>
             <span>Score : {Quizzprogress.score}</span>
           </p>
-          <Progress
-            value={Quizzprogress.currentIndex + 1}
-            max={Quizzprogress.numberQuestions}
-          />
         </div>
-        <h3 className="font-bold text-xl my-6">{CurrentQuestion.question}</h3>
-        {/* {option.id === undefined && notSelectedOption && (
-          <p className="text-red-600">Veuillez saisir une option</p>
-        )} */}
+        <h3 className="font-bold text-xl my-6">{CurrentQuestion?.question}</h3>
+
         <QuizzForm
           option={option}
           setOption={setOption}
@@ -108,7 +110,7 @@ const StartQuizz = ({ questions }: { questions: QuizQuestion[] }) => {
           <Button variant={"destructive"}>Terminé</Button>
           <Button
             disabled={
-              Quizzprogress.currentIndex == Quizzprogress.numberQuestions - 1 ||
+              Quizzprogress.currentIndex == Quizzprogress.numberQuestions ||
               option.id === undefined
             }
             variant={"success"}

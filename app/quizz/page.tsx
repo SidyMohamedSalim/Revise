@@ -1,9 +1,14 @@
 import GenerateAiQuestion from "@/components/GenerateAiQuestion";
-import StartQuizz from "@/components/StartQuizz";
 import CenterLayout from "@/components/layout/CenterLayout";
+import { getAuthSession } from "@/lib/authConfig";
+import { redirect } from "next/navigation";
 import React from "react";
 
-const page = () => {
+const page = async () => {
+  const session = await getAuthSession();
+  if (!session?.user.id) {
+    redirect("/");
+  }
   return (
     <div>
       <CenterLayout>
