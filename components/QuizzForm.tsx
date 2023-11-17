@@ -1,11 +1,7 @@
 "use client";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { Input } from "./ui/input";
 import { cn } from "@/lib/utils";
-import { Button } from "./ui/button";
-import { Progress } from "./ui/progress";
 import { QuizQuestion } from "@/lib/data";
 import { AlertCircle, CheckCircle } from "lucide-react";
 
@@ -14,39 +10,31 @@ export type optionType = {
   id: "choiceA" | "choiceB" | "choiceC" | "choiceD" | undefined;
 };
 
-export function QuizzForm({ question }: { question: QuizQuestion }) {
-  const [option, setOption] = useState<optionType>({
-    id: undefined,
-    value: "",
-  });
+export function QuizzForm({
+  question,
+  isSubmit = false,
+  option,
+  setOption,
+}: {
+  question: QuizQuestion;
+  isSubmit: boolean;
+  option: optionType;
+  setOption: (value: React.SetStateAction<optionType>) => void;
+}) {
   const ids: optionType["id"][] = ["choiceA", "choiceB", "choiceC", "choiceD"];
   return (
-    <div className="border p-4 my-20 text-sm">
-      <Progress defaultValue={30} max={100} />
-
-      <h3 className="font-bold text-xl my-6">{question.question}</h3>
-
-      {/* options */}
-      <div>
-        {question.options.map((el, index) => (
-          <Option
-            isSubmit={false}
-            correctAnswer={question.correctAnswer}
-            key={el}
-            id={ids[index]}
-            value={el}
-            isSelected={el === ids[index]}
-            setOption={setOption}
-          />
-        ))}
-      </div>
-
-      {/* actions */}
-
-      <div className="flex gap-3 justify-end items-center   ">
-        <Button variant={"destructive"}>Return</Button>
-        <Button variant={"success"}>Valider la reponse</Button>
-      </div>
+    <div>
+      {question.options.map((el, index) => (
+        <Option
+          key={el}
+          isSubmit={isSubmit}
+          correctAnswer={question.correctAnswer}
+          id={ids[index]}
+          value={el}
+          currentOptionId={option.id}
+          setOption={setOption}
+        />
+      ))}
     </div>
   );
 }
@@ -54,7 +42,7 @@ export function QuizzForm({ question }: { question: QuizQuestion }) {
 export const Option = ({
   id,
   value,
-  isSelected = false,
+  currentOptionId,
   setOption,
   isSubmit = false,
   correctAnswer,
@@ -62,10 +50,11 @@ export const Option = ({
   value: string;
   setOption: Dispatch<SetStateAction<optionType>>;
   id: optionType["id"];
-  isSelected: boolean;
+  currentOptionId: optionType["id"];
   isSubmit: boolean;
   correctAnswer: string;
 }) => {
+  const isSelected = currentOptionId === id;
   return (
     <div
       onClick={(e) => {
@@ -79,7 +68,10 @@ export const Option = ({
         "flex border border-accent rounded-sm  my-4 text-start justify-between items-center whitespace-normal p-4 ",
         {
           "border-blue-600": isSelected,
-          "border-green-600": value === correctAnswer && isSubmit,
+          "border-green-600":
+            value === correctAnswer &&
+            isSubmit &&
+            currentOptionId !== undefined,
           "border-red-600": isSelected && value !== correctAnswer && isSubmit,
         }
       )}
@@ -89,7 +81,9 @@ export const Option = ({
       {isSelected && value !== correctAnswer && isSubmit && (
         <AlertCircle color="red" />
       )}
-      {value === correctAnswer && isSubmit && <CheckCircle color="green" />}
+      {value === correctAnswer && isSubmit && currentOptionId !== undefined && (
+        <CheckCircle color="green" />
+      )}
     </div>
   );
 };

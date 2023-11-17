@@ -1,7 +1,7 @@
 "use client";
 import { QuizQuestion } from "@/lib/data";
 import React, { useState } from "react";
-import { Option, optionType } from "./QuizzForm";
+import { QuizzForm, optionType } from "./QuizzForm";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 import { Progress } from "./ui/progress";
@@ -17,11 +17,10 @@ const StartQuizz = ({ questions }: { questions: QuizQuestion[] }) => {
     value: "",
     id: undefined,
   });
-  const ids: optionType["id"][] = ["choiceA", "choiceB", "choiceC", "choiceD"];
+
   const router = useRouter();
-
   const [isSubmit, setIsSubmit] = useState(false);
-
+  // const [notSelectedOption, setNotSelectedOption] = useState(false);
   const [Quizzprogress, SetQuizzProgress] = useState<QuizzProgressType>({
     currentIndex: 0,
     numberQuestions: questions.length,
@@ -29,12 +28,17 @@ const StartQuizz = ({ questions }: { questions: QuizQuestion[] }) => {
   });
 
   const CurrentQuestion = questions[Quizzprogress.currentIndex];
-  console.log(Quizzprogress);
-  console.log(option);
 
   // start Game
   const onSubmitGame = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
+
+    if (option.id === undefined) {
+      // setNotSelectedOption(true);
+      return;
+    }
+
+    // setNotSelectedOption(false);
     setIsSubmit(true);
 
     setTimeout(() => {
@@ -88,26 +92,25 @@ const StartQuizz = ({ questions }: { questions: QuizQuestion[] }) => {
           />
         </div>
         <h3 className="font-bold text-xl my-6">{CurrentQuestion.question}</h3>
-        <div>
-          {CurrentQuestion.options.map((el, index) => (
-            <Option
-              key={el}
-              isSubmit={isSubmit}
-              correctAnswer={CurrentQuestion.correctAnswer}
-              id={ids[index]}
-              value={el}
-              isSelected={option.id === ids[index]}
-              setOption={setOption}
-            />
-          ))}
-        </div>
+        {/* {option.id === undefined && notSelectedOption && (
+          <p className="text-red-600">Veuillez saisir une option</p>
+        )} */}
+        <QuizzForm
+          option={option}
+          setOption={setOption}
+          isSubmit={isSubmit}
+          question={CurrentQuestion}
+        />
 
         {/* actions */}
 
         <div className="flex gap-3 justify-end items-center">
           <Button variant={"destructive"}>Terminé</Button>
           <Button
-            id="btn-canva"
+            disabled={
+              Quizzprogress.currentIndex == Quizzprogress.numberQuestions - 1 ||
+              option.id === undefined
+            }
             variant={"success"}
             onClick={async (e) => {
               onSubmitGame(e);
