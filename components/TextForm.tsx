@@ -13,6 +13,7 @@ import { UseQUizzStore } from "@/src/zustand/store";
 import clsx from "clsx";
 
 const TextForm = () => {
+  const maxLength = 6000;
   const [textAreaCount, setTextAreaCount] = useState(0);
   const updateQuizzData = UseQUizzStore((state) => state.updateQuizzData);
   const [data, setData] = useState<QuizQuestion[] | null>(null);
@@ -79,7 +80,7 @@ const TextForm = () => {
       <fieldset name="user" className="flex items-end gap-2 flex-col ">
         <div className="w-full">
           <TextArea
-            max={500}
+            max={maxLength}
             count={textAreaCount}
             onChange={(e) => {
               setTextAreaCount(e.currentTarget.value.length);
@@ -89,14 +90,14 @@ const TextForm = () => {
           />
           <p
             className={clsx("text-end my-4", {
-              "text-red-400": textAreaCount > 6000,
+              "text-red-400": textAreaCount > maxLength,
             })}
           >
-            {textAreaCount} / 6000
+            {textAreaCount} / {maxLength}
           </p>
         </div>
         <Button
-          disabled={mutation.isPending || textAreaCount > 6000}
+          disabled={mutation.isPending || textAreaCount > maxLength}
           className="bg-green-500"
           type="submit"
         >

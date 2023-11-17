@@ -36,7 +36,7 @@ const Header = ({
         <nav className="flex gap-3">
           <Link
             className={cn(buttonVariants({ variant: "link" }))}
-            href={"/quizz"}
+            href={"/dashboard"}
           >
             Commencer
           </Link>

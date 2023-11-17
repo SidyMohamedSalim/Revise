@@ -8,7 +8,7 @@ export default async function Page() {
   const session = await getAuthSession();
 
   if (session?.user.id) {
-    redirect("/quizz");
+    redirect("/dashboard");
   }
 
   return (
