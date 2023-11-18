@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { UseQUizzStore } from "@/src/zustand/store";
 import clsx from "clsx";
 import { decrementNumberAction } from "@/app/actions/quizz.action";
+import { env } from "@/src/env";
 
 const TextForm = ({ countMax }: { countMax: number }) => {
   const maxLength = 6000;
@@ -20,7 +21,7 @@ const TextForm = ({ countMax }: { countMax: number }) => {
   const queryClient = useQueryClient();
   const router = useRouter();
   const openai = new OpenAI({
-    apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY,
+    apiKey: env.NEXT_PUBLIC_OPENAI_KEY,
     dangerouslyAllowBrowser: true,
   });
 
