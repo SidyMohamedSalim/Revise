@@ -6,7 +6,14 @@ const CenterLayout = ({
   children,
 }: PropsWithChildren<{ className?: string }>) => {
   return (
-    <div className={cn("max-w-4xl mx-auto p-2", className)}>{children}</div>
+    <div
+      className={cn(
+        "max-w-4xl mx-auto p-2 max-md:w-full max-md:px-2",
+        className
+      )}
+    >
+      {children}
+    </div>
   );
 };
 

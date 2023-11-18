@@ -1,8 +1,13 @@
-export type QuizQuestion = {
-  question: string;
-  options: string[];
-  correctAnswer: string;
-};
+import { string, z } from "zod";
+import prisma from "./prisma";
+
+export const QuestionScheme = z.object({
+  question: z.string(),
+  options: z.string().array(),
+  correctAnswer: z.string(),
+});
+
+export type QuizQuestion = z.infer<typeof QuestionScheme>;
 
 export const quizData: QuizQuestion[] = [
   {
@@ -93,3 +98,16 @@ export const quizData: QuizQuestion[] = [
     correctAnswer: "Musées fascinants",
   },
 ];
+
+export const userCountQuizz = async (id: string) => {
+  const countUserNumberQuizz = await prisma.user.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      usageMax: true,
+    },
+  });
+
+  return countUserNumberQuizz;
+};

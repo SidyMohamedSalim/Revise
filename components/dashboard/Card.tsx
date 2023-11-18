@@ -1,4 +1,4 @@
-import { MonitorCheck } from "lucide-react";
+import { BookOpen, Gem, MonitorCheck } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { maxTry } from "@/lib/config";
 
 export function Card({
   title,
@@ -17,21 +18,21 @@ export function Card({
 }: {
   title: string;
   value: number | string;
-  type: "invoices" | "customers" | "pending" | "collected";
+  type: "usage" | "old";
 }) {
-  const Icon = MonitorCheck;
+  const Icon = type === "usage" ? Gem : BookOpen;
 
   return (
     <div className="rounded-xl bg-gray-50 dark:bg-gray-800 p-2">
       <div className="flex p-4">
-        {Icon ? <Icon className="h-5 w-5 text-gray-800" /> : null}
+        {Icon ? <Icon className="h-5 w-5 " /> : null}
         <h3 className="ml-2 text-sm font-medium">{title}</h3>
       </div>
       <p
         className={`
           truncate rounded-xl bg-white dark:bg-gray-900 bg px-4 py-8 text-center text-2xl`}
       >
-        {value} / 3000
+        {value}
       </p>
     </div>
   );
@@ -41,45 +42,23 @@ const invoices = [
   {
     invoice: "INV001",
     paymentStatus:
-      "Paid et mer  a tous pour ce magnifique bijou je trouve tu as tuee les  dslksd   dslk asdklke dlksakjds alk dsa lk sda  ldaskldaj  adlk sadlk sa lkadsasdl kdsalk etlks  lk sd kl sd ldsj sd l dsfflk sdflkk",
+      "L'interface utilisateur est intuitive et conviviale, facilitant la navigation et l'utilisation de l'application.",
     totalAmount: "$250.00",
     paymentMethod: "Credit Card",
   },
   {
     invoice: "INV002",
-    paymentStatus: "Pending",
+    paymentStatus:
+      " L'application propose une large gamme de quiz, couvrant divers sujets et niveaux de difficulté, ce qui la rend adaptée à un large public.",
     totalAmount: "$150.00",
     paymentMethod: "PayPal",
   },
   {
     invoice: "INV003",
-    paymentStatus: "Unpaid",
+    paymentStatus:
+      "L'application offre des temps de chargement rapides, ce qui optimise l'expérience utilisateur en évitant les frustrations liées à des délais excessifs.",
     totalAmount: "$350.00",
     paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV004",
-    paymentStatus: "Paid",
-    totalAmount: "$450.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV005",
-    paymentStatus: "Paid",
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV006",
-    paymentStatus: "Pending",
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
   },
 ];
 
@@ -106,7 +85,7 @@ export function ReviewsCard() {
                   </div>
                 </div>
               </TableCell>
-              <TableCell>{invoice.paymentStatus}</TableCell>
+              <TableCell className="italic">{invoice.paymentStatus}</TableCell>
               <TableCell className="text-right">
                 <div className="rating rating-xs">
                   <input

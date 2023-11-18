@@ -1,6 +1,7 @@
-import GenerateAiQuestion from "@/components/GenerateAiQuestion";
+import GenerateAiQuestion from "@/components/quizz/GenerateAiQuestion";
 import CenterLayout from "@/components/layout/CenterLayout";
 import { getAuthSession } from "@/lib/authConfig";
+import { userCountQuizz } from "@/lib/data";
 import { redirect } from "next/navigation";
 import React from "react";
 
@@ -9,10 +10,11 @@ const page = async () => {
   if (!session?.user.id) {
     redirect("/");
   }
+  const countUserGameQuizz = await userCountQuizz(session.user.id ?? "");
   return (
     <div>
       <CenterLayout>
-        <GenerateAiQuestion />
+        <GenerateAiQuestion countMax={countUserGameQuizz?.usageMax ?? 0} />
       </CenterLayout>
     </div>
   );

@@ -1,11 +1,20 @@
 import { Card, ReviewsCard } from "@/components/dashboard/Card";
 import CenterLayout from "@/components/layout/CenterLayout";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { getAuthSession } from "@/lib/authConfig";
+import { userCountQuizz } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import React from "react";
 
-const page = () => {
+const page = async () => {
+  const session = await getAuthSession();
+
+  if (!session) {
+    return redirect("/");
+  }
+  const countUserGameQuizz = await userCountQuizz(session.user.id ?? "");
   return (
     <div>
       <CenterLayout>
@@ -20,8 +29,12 @@ const page = () => {
 
         {/* card stats */}
         <div className="grid grid-cols-2 gap-8">
-          <Card title="Utilisations" value={30} type="invoices" />
-          <Card title="Historiques" value={1600} type="invoices" />
+          <Card
+            title="Utilisations"
+            value={countUserGameQuizz?.usageMax ?? 0}
+            type="usage"
+          />
+          <Card title="Historiques" value={1600} type="old" />
         </div>
 
         {/* card reviews */}

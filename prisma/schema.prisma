@@ -10,6 +10,52 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  usageMax      Int       @default(3)
+
+  accounts Account[]
+  sessions Session[]
+  reviews  Review[]
+  allquizz Quizz[]
+}
+
+model Quizz {
+  id        String     @id @default(cuid())
+  questions Question[]
+
+  userId String
+  User   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Question {
+  id            String @id @default(cuid())
+  textQuestion  String
+  correctAnswer String
+  optionA       String
+  optionB       String
+  optionC       String
+  optionD       String
+
+  quizzId String
+  quizz   Quizz  @relation(references: [id], fields: [quizzId], onDelete: Cascade)
+}
+
+model Review {
+  id      String @id @default(cuid())
+  content String
+
+  userId String
+
+  User User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// next auth models
+
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -37,16 +83,6 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
 }
 
 model VerificationToken {

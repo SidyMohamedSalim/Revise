@@ -4,6 +4,7 @@ import { AppProviders } from "./providers";
 import Header from "./header";
 import { inconsolata } from "@/src/theme/font";
 import { getAuthSession } from "@/lib/authConfig";
+import { userCountQuizz } from "@/lib/data";
 
 export default async function RootLayout({
   children,
@@ -11,6 +12,8 @@ export default async function RootLayout({
   children: React.ReactElement;
 }) {
   const session = await getAuthSession();
+
+  const countUserGameQuizz = await userCountQuizz(session?.user.id ?? "");
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -26,6 +29,7 @@ export default async function RootLayout({
             userName={session?.user.name}
             userId={session?.user.id}
             userImage={session?.user.image}
+            countUsage={countUserGameQuizz?.usageMax}
           />
           {children}
         </body>

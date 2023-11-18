@@ -1,22 +1,22 @@
 "use client";
 
 import React, { FormEvent, useState } from "react";
-import { TextArea } from "./ui/textarea";
-import { Button } from "./ui/button";
+import { TextArea } from "../ui/textarea";
+import { Button } from "../ui/button";
 import { CreateChatCompletionRequestMessage } from "openai/resources";
 import OpenAI from "openai";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Loader } from "./ui/loader";
+import { Loader } from "../ui/loader";
 import { QuizQuestion, quizData } from "@/lib/data";
 import { useRouter } from "next/navigation";
 import { UseQUizzStore } from "@/src/zustand/store";
 import clsx from "clsx";
+import { decrementNumberAction } from "@/app/actions/quizz.action";
 
-const TextForm = () => {
+const TextForm = ({ countMax }: { countMax: number }) => {
   const maxLength = 6000;
   const [textAreaCount, setTextAreaCount] = useState(0);
   const updateQuizzData = UseQUizzStore((state) => state.updateQuizzData);
-  const [data, setData] = useState<QuizQuestion[] | null>(null);
   const queryClient = useQueryClient();
   const router = useRouter();
   const openai = new OpenAI({
@@ -36,7 +36,7 @@ const TextForm = () => {
         temperature: 0.7,
         max_tokens: 500,
       }),
-    onSettled: () => {
+    onSettled: async () => {
       queryClient.cancelQueries();
       const data = mutation.data?.choices[0].message.content;
       if (data) {
@@ -50,8 +50,6 @@ const TextForm = () => {
   });
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
     const formData = new FormData(e.currentTarget);
 
     const user = String(formData.get("user"));
@@ -61,28 +59,47 @@ const TextForm = () => {
       content: `Créez une JSON avec 3 questions pertinentes permettant de reviser tous les sujets du texte en objet de la forme  {question: string;options: string[];correctAnswer: string;} (4 options pour chaque question et une correctAnswer) basée sur les informations suivante  :  je veux uniquement les questions.NB:meme pas une texte de ta part: juste les questions . Il ne faut pas oublier je veux un format JSON sans ecrire aucun mot de ta part uniquement le tableau. Voici le texte : ${user}`,
     } satisfies CreateChatCompletionRequestMessage;
 
-    await mutation.mutate({ TexteUser });
+    if (countMax > 0) {
+      await mutation.mutate({ TexteUser });
+    }
   };
 
   if (mutation.status === "success") {
     const data = mutation.data?.choices[0].message.content;
     if (data) {
       updateQuizzData(JSON.parse(data));
+
       router.push("/quizz/game");
     }
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form
+      onSubmit={async (e) => {
+        e.preventDefault();
+        await handleSubmit(e).then(async () => {
+          await decrementNumberAction();
+        });
+      }}
+    >
       <h3 className="py-4 font-bold text-lg">
         Generer un examen à partir d&apos;un texte donné
       </h3>
+
+      {countMax <= 0 && !mutation.isPending && (
+        <p className="text-red-500 font-bold">
+          Les nombres de possiblités sont terminés !!
+        </p>
+      )}
+
       <fieldset name="user" className="flex items-end gap-2 flex-col ">
         <div className="w-full">
           <TextArea
+            disabled={countMax <= 0}
             max={maxLength}
             count={textAreaCount}
             onChange={(e) => {
+              e.preventDefault();
               setTextAreaCount(e.currentTarget.value.length);
             }}
             name="user"
@@ -97,11 +114,13 @@ const TextForm = () => {
           </p>
         </div>
         <Button
-          disabled={mutation.isPending || textAreaCount > maxLength}
+          disabled={
+            mutation.isPending || textAreaCount > maxLength || countMax <= 0
+          }
           className="bg-green-500"
           type="submit"
         >
-          {mutation.isPending ? "creation..." : "Generer"}
+          {mutation.isPending ? <p>Creation...</p> : "Generer"}
         </Button>
       </fieldset>
     </form>

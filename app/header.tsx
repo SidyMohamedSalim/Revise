@@ -10,15 +10,18 @@ import React from "react";
 
 import { signIn } from "next-auth/react";
 import AvatarProfile from "@/components/ui/AvatarProfile";
+import { Gem } from "lucide-react";
 
 const Header = ({
   userId,
   userName,
   userImage,
+  countUsage,
 }: {
   userId?: string;
   userImage?: string | undefined | null;
   userName?: string | undefined | null;
+  countUsage?: number;
 }) => {
   return (
     <div>
@@ -46,9 +49,20 @@ const Header = ({
         </nav>
 
         <div className="flex items-center gap-4">
+          {userId && (
+            <p
+              className={cn(
+                buttonVariants({ variant: "ghost" }),
+                "cursor-default"
+              )}
+            >
+              <Gem /> <span>{countUsage ?? 0}</span>
+            </p>
+          )}
+
           <ButtonTheme />
           {userId ? (
-            <div>
+            <div className="flex  gap-2 items-center">
               <AvatarProfile name={userName} image={userImage} />
             </div>
           ) : (

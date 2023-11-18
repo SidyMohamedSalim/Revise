@@ -1,4 +1,4 @@
-import StartQuizz from "@/components/StartQuizz";
+import StartQuizz from "@/components/quizz/StartQuizz";
 import CenterLayout from "@/components/layout/CenterLayout";
 import React from "react";
 

@@ -2,10 +2,11 @@
 import { QuizQuestion } from "@/lib/data";
 import React, { useState } from "react";
 import { QuizzForm, optionType } from "./QuizzForm";
-import { Button } from "./ui/button";
+import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
-import { Progress } from "./ui/progress";
+import { Progress } from "../ui/progress";
 import { UseQUizzStore } from "@/src/zustand/store";
+import { decrementNumberAction } from "@/app/actions/quizz.action";
 
 export type QuizzProgressType = {
   currentIndex: number;

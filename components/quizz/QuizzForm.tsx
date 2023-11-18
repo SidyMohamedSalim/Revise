@@ -1,6 +1,6 @@
 "use client";
 import { Dispatch, SetStateAction } from "react";
-import { Input } from "./ui/input";
+import { Input } from "../ui/input";
 import { cn } from "@/lib/utils";
 import { QuizQuestion } from "@/lib/data";
 import { AlertCircle, CheckCircle } from "lucide-react";
