@@ -62,7 +62,15 @@ const StartQuizz = () => {
         }
         if (Quizzprogress.currentIndex == Quizzprogress.numberQuestions - 1) {
           // end  Quizz
-          alert("termine");
+          router.push("/dashboard");
+
+          return (
+            <div className="toast">
+              <div className="alert alert-info">
+                <span>Terminé.</span>
+              </div>
+            </div>
+          );
         } else {
           // Continue Next Question
           SetQuizzProgress((current) => {
